@@ -3,18 +3,18 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{7,8} )
+PYTHON_COMPAT=( python3_{7..9} )
 PYTHON_REQ_USE="xml"
-MY_P="${P/_/}"
-inherit cmake flag-o-matic xdg toolchain-funcs python-single-r1 git-r3
+
+inherit cmake flag-o-matic xdg toolchain-funcs python-single-r1
 
 DESCRIPTION="SVG based generic vector-drawing program"
 HOMEPAGE="https://inkscape.org/"
-EGIT_REPO_URI="https://gitlab.com/inkscape/inkscape.git"
+SRC_URI="https://dev.gentoo.org/~zlogene/distfiles/${CATEGORY}/${PN}/${P}.tar.xz"
 
 LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="amd64 ~arm ~arm64 ~hppa ~ia64 ppc ppc64 ~s390 ~sparc x86"
 IUSE="cdr dbus dia exif graphicsmagick imagemagick inkjar jemalloc jpeg lcms
 openmp postscript spell static-libs svg2 visio wpg X"
 
@@ -98,7 +98,13 @@ DEPEND="${COMMON_DEPEND}
 
 RESTRICT="test"
 
-S="${WORKDIR}/${MY_P}"
+S="${WORKDIR}"/${P}_2021-01-15_e86c870879
+
+# automagic-libX11: https://gitlab.com/inkscape/inkscape/-/merge_requests/3208
+PATCHES=(
+	"${FILESDIR}"/glib-2.67.3.patch
+	"${FILESDIR}"/inkscape-1.0.2-automagic-libX11.patch
+)
 
 pkg_pretend() {
 	if [[ ${MERGE_TYPE} != binary ]] && use openmp; then
@@ -117,8 +123,8 @@ src_configure() {
 
 	local mycmakeargs=(
 		# -DWITH_LPETOOL   # Compile with LPE Tool and experimental LPEs enabled
-		-DWITH_NLS=ON
 		-DENABLE_POPPLER=ON
+		-DWITH_NLS=ON
 		-DENABLE_POPPLER_CAIRO=ON
 		-DWITH_PROFILING=OFF
 		-DWITH_LIBCDR=$(usex cdr)
@@ -147,7 +153,6 @@ src_install() {
 
 	find "${ED}"/usr/share/man -type f -maxdepth 3 -name '*.gz' -exec gzip -d {} \; || die
 
-	# No extensions are present in beta1
 	local extdir="${ED}"/usr/share/${PN}/extensions
 
 	if [[ -e "${extdir}" ]] && [[ -n $(find "${extdir}" -mindepth 1) ]]; then
