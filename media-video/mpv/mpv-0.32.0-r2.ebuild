@@ -31,7 +31,7 @@ SLOT="0"
 IUSE="+alsa aqua archive bluray cdda +cli coreaudio cplugins cuda debug doc drm dvb
 	dvd +egl gamepad gbm +iconv jack javascript jpeg lcms +libass libcaca libmpv +lua
 	luajit openal +opengl oss pulseaudio raspberry-pi rubberband samba sdl
-	selinux test tools +uchardet vaapi vdpau vulkan wayland +X +xv zlib zimg"
+	selinux sndio test tools +uchardet vaapi vdpau vulkan wayland +X +xv zlib zimg"
 
 REQUIRED_USE="
 	|| ( cli libmpv )
@@ -96,6 +96,7 @@ COMMON_DEPEND="
 	rubberband? ( >=media-libs/rubberband-1.8.0 )
 	samba? ( net-fs/samba )
 	sdl? ( media-libs/libsdl2[sound,threads,video] )
+	sndio? ( media-sound/sndio )
 	vaapi? ( x11-libs/libva:=[drm?,X?,wayland?] )
 	vdpau? ( x11-libs/libvdpau )
 	vulkan? (
@@ -192,7 +193,7 @@ src_configure() {
 		$(use_enable sdl sdl2) # Listed under audio, but also includes video.
 		$(use_enable oss oss-audio)
 		--disable-rsound # Only available in overlays.
-		--disable-sndio # Only available in overlays.
+		$(use_enable sndio)
 		$(use_enable pulseaudio pulse)
 		$(use_enable jack)
 		$(use_enable openal)
