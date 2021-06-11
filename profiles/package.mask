@@ -81,6 +81,7 @@ dev-python/csv23
 ~media-libs/gst-rtsp-server-1.18.4
 ~media-plugins/gst-plugins-a52dec-1.18.4
 ~media-plugins/gst-plugins-amr-1.18.4
+~media-plugins/gst-plugins-aom-1.18.4
 ~media-plugins/gst-plugins-assrender-1.18.4
 ~media-plugins/gst-plugins-bluez-1.18.4
 ~media-plugins/gst-plugins-bs2b-1.18.4
