@@ -449,6 +449,12 @@ cvs_src_unpack() {
 
 	[[ -z ${ECVS_MODULE} ]] && die "ERROR: CVS module not set, cannot continue."
 
+	#default to ssh
+	[[ -z ${CVS_RSH} ]] && export CVS_RSH="ssh"
+	if [[ ${CVS_RSH} != "ssh" ]] ; then
+		die "Support for ext auth with clients other than ssh has not been implemented yet"
+	fi
+
 	local ECVS_LOCALNAME=${ECVS_LOCALNAME:-${ECVS_MODULE}}
 
 	local sanitized_pn=$(echo "${PN}" | LC_ALL=C sed -e 's:[^A-Za-z0-9_]:_:g')
