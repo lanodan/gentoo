@@ -11,11 +11,15 @@ description_upgrade="Upgrade the nginx binary without losing connections."
 description_reload="Reload the nginx configuration without losing connections."
 
 NGINX_CONFIGFILE=${NGINX_CONFIGFILE:-/etc/nginx/nginx.conf}
+user=${NGINX_USER:-nginx}
+group=${NGINX_GROUP:-nginx}
+capabilities="^cap_net_bind_service"
 
 command="/usr/sbin/nginx"
 command_args="-c \"${NGINX_CONFIGFILE}\""
+command_user="${user}:${group}"
 start_stop_daemon_args=${NGINX_SSDARGS:-"--wait 1000"}
-pidfile=${NGINX_PIDFILE:-/run/nginx/nginx.pid}
+pidfile="${NGINX_PIDFILE:-/run/nginx/nginx.pid}"
 user=${NGINX_USER:-nginx}
 group=${NGINX_GROUP:-nginx}
 retry=${NGINX_TERMTIMEOUT:-"TERM/60/KILL/5"}
@@ -26,8 +30,7 @@ depend() {
 }
 
 start_pre() {
-	mkdir -m 0775 -p "/run/nginx"
-	chown -R "${user}:${group}" "/run/nginx"
+	checkpath --directory --owner nginx:nginx "${pidfile%/*}" || return 1
 	if [ "${RC_CMD}" != "restart" ]; then
 		configtest || return 1
 	fi
