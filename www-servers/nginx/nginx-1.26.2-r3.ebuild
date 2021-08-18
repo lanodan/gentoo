@@ -770,7 +770,7 @@ src_install() {
 	fowners ${PN}:${PN} ${keepdir_list}
 
 	fperms 0710 /var/log/nginx
-	fowners 0:${PN} /var/log/nginx
+	fowners ${PN}:${PN} /var/log/nginx
 
 	# logrotate
 	insinto /etc/logrotate.d
