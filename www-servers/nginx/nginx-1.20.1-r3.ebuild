@@ -731,6 +731,12 @@ src_install() {
 
 	keepdir /var/log/nginx ${keepdir_list}
 
+	# Only allow the nginx user to run nginx
+	fperms 0500 /usr/sbin/nginx
+	fowners ${PN}:${PN} /usr/sbin/nginx
+	# Let /usr/sbin/nginx bind to <1024 ports
+	setcap cap_net_bind_service+p "${ED}"/usr/sbin/nginx
+
 	# this solves a problem with SELinux where nginx doesn't see the directories
 	# as root and tries to create them as nginx
 	fperms 0750 "${NGINX_HOME_TMP}"
@@ -740,7 +746,7 @@ src_install() {
 	fowners ${PN}:${PN} ${keepdir_list}
 
 	fperms 0710 /var/log/nginx
-	fowners 0:${PN} /var/log/nginx
+	fowners ${PN}:${PN} /var/log/nginx
 
 	# logrotate
 	insinto /etc/logrotate.d

@@ -157,7 +157,7 @@ GEOIP2_MODULE_URI="https://github.com/leev/ngx_http_geoip2_module/archive/${GEOI
 GEOIP2_MODULE_WD="${WORKDIR}/ngx_http_geoip2_module-${GEOIP2_MODULE_PV}"
 
 # njs-module (https://github.com/nginx/njs, as-is)
-NJS_MODULE_PV="0.6.1"
+NJS_MODULE_PV="0.6.0"
 NJS_MODULE_P="njs-${NJS_MODULE_PV}"
 NJS_MODULE_URI="https://github.com/nginx/njs/archive/${NJS_MODULE_PV}.tar.gz"
 NJS_MODULE_WD="${WORKDIR}/njs-${NJS_MODULE_PV}"
@@ -203,7 +203,7 @@ LICENSE="BSD-2 BSD SSLeay MIT GPL-2 GPL-2+
 	nginx_modules_http_push_stream? ( GPL-3 )"
 
 SLOT="mainline"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~riscv ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux"
 
 # Package doesn't provide a real test suite
 RESTRICT="test"
@@ -731,6 +731,12 @@ src_install() {
 
 	keepdir /var/log/nginx ${keepdir_list}
 
+	# Only allow the nginx user to run nginx
+	fperms 0500 /usr/sbin/nginx
+	fowners ${PN}:${PN} /usr/sbin/nginx
+	# Let /usr/sbin/nginx bind to <1024 ports
+	setcap cap_net_bind_service+p "${ED}"/usr/sbin/nginx
+
 	# this solves a problem with SELinux where nginx doesn't see the directories
 	# as root and tries to create them as nginx
 	fperms 0750 "${NGINX_HOME_TMP}"
@@ -740,7 +746,7 @@ src_install() {
 	fowners ${PN}:${PN} ${keepdir_list}
 
 	fperms 0710 /var/log/nginx
-	fowners 0:${PN} /var/log/nginx
+	fowners ${PN}:${PN} /var/log/nginx
 
 	# logrotate
 	insinto /etc/logrotate.d
