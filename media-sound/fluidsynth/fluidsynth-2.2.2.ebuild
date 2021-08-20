@@ -10,10 +10,11 @@ DESCRIPTION="Software real-time synthesizer based on the Soundfont 2 specificati
 HOMEPAGE="https://www.fluidsynth.org"
 SRC_URI="https://github.com/FluidSynth/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="LGPL-2.1+"
+# sndio patch is under the ISC license
+LICENSE="LGPL-2.1+ ISC"
 SLOT="0/3"
 KEYWORDS="~alpha amd64 arm arm64 ~hppa ppc ppc64 sparc x86"
-IUSE="alsa dbus debug examples ipv6 jack ladspa lash network oss portaudio pulseaudio +readline sdl +sndfile systemd threads"
+IUSE="alsa dbus debug examples ipv6 jack ladspa lash network oss portaudio pulseaudio +readline sdl +sndfile sndio systemd threads"
 
 BDEPEND="
 	virtual/pkgconfig
@@ -35,10 +36,13 @@ DEPEND="
 	readline? ( sys-libs/readline:0=[${MULTILIB_USEDEP}] )
 	sdl? ( media-libs/libsdl2[${MULTILIB_USEDEP}] )
 	sndfile? ( media-libs/libsndfile[${MULTILIB_USEDEP}] )
+	sndio? ( media-sound/sndio:=[${MULTILIB_USEDEP}] )
 "
 RDEPEND="${DEPEND}"
 
 DOCS=( AUTHORS ChangeLog README.md THANKS TODO doc/fluidsynth-v20-devdoc.txt )
+
+PATCHES=( "${FILESDIR}/fluidsynth-2.2.2-sndio.patch" )
 
 src_configure() {
 	local mycmakeargs=(
@@ -66,6 +70,7 @@ src_configure() {
 		-Denable-readline=$(usex readline)
 		-Denable-sdl2=$(usex sdl)
 		-Denable-systemd=$(usex systemd)
+		-Denable-sndio=$(usex sndio)
 		-Denable-threads=$(usex threads)
 		-Denable-trap-on-fpe=$(usex debug)
 		-Denable-ubsan=OFF # compile and link against UBSan (for debugging fluidsynth internals)
