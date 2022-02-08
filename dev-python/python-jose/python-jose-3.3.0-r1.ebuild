@@ -22,15 +22,16 @@ SRC_URI="
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="amd64 ~arm arm64 ~ppc64 ~riscv x86 ~amd64-linux ~x86-linux"
+IUSE="+cryptography pycryptodome"
 
 # TODO: require only one crypto backend?
 RDEPEND="
-	dev-python/cryptography[${PYTHON_USEDEP}]
 	dev-python/ecdsa[${PYTHON_USEDEP}]
-	dev-python/pyasn1[${PYTHON_USEDEP}]
-	>=dev-python/pycryptodome-3.3.1[${PYTHON_USEDEP}]
 	dev-python/rsa[${PYTHON_USEDEP}]
 	dev-python/six[${PYTHON_USEDEP}]
+	dev-python/pyasn1[${PYTHON_USEDEP}]
+	cryptography? ( dev-python/cryptography[${PYTHON_USEDEP}] )
+	pycryptodome? ( >=dev-python/pycryptodome-3.3.1[${PYTHON_USEDEP}] )
 "
 
 distutils_enable_tests pytest
