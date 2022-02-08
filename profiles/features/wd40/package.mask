@@ -280,7 +280,6 @@ dev-python/pytest-salt-factories
 dev-python/pytest-trio
 dev-python/python-glanceclient
 dev-python/python-ironicclient
-dev-python/python-jose
 dev-python/python-neutronclient
 dev-python/python-openstackclient
 dev-python/python-snappy

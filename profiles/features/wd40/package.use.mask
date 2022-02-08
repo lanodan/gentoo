@@ -113,6 +113,10 @@ dev-python/django test
 # The JIT compiler in ruby requires rust
 dev-lang/ruby jit
 
+# Haelwenn (lanodan) Monnier <contact@hacktivis.me> (2023-01-30)
+# One more package that depends on dev-python/cryptography
+dev-python/python-jose cryptography
+
 # Sam James <sam@gentoo.org> (2022-12-26)
 # Needs dev-python/mkdocs-redirects->dev-python/twine which is masked on wd40
 dev-debug/gef doc
