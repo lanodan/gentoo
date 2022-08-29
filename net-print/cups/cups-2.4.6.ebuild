@@ -154,8 +154,7 @@ multilib_src_configure() {
 		--with-cups-user=lp
 		--with-cups-group=lp
 		--with-docdir="${EPREFIX}"/usr/share/cups/html
-		# See bug #863221 for adding root
-		--with-system-groups="root lpadmin"
+		--with-system-groups="lpadmin"
 		--with-xinetd="${EPREFIX}"/etc/xinetd.d
 		$(multilib_native_use_enable acl)
 		$(use_enable dbus)
@@ -275,6 +274,12 @@ multilib_src_install_all() {
 	fi
 
 	keepdir /etc/cups/{interfaces,ppd,ssl}
+
+	# For unprivileged cups
+	fowners -R lp /usr/libexec/cups/backend
+	fowners -R lp /etc/cups
+	fowners -R lp /var/spool/cups
+	fowners -R lp /var/log/cups
 
 	if ! use X ; then
 		rm -r "${ED}"/usr/share/applications || die
