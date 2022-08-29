@@ -11,7 +11,7 @@ HOMEPAGE="https://www.gtk.org/"
 
 LICENSE="LGPL-2+"
 SLOT="3"
-IUSE="aqua broadway colord cups examples gtk-doc +introspection sysprof test vim-syntax wayland +X xinerama"
+IUSE="aqua accessibility broadway colord cups examples gtk-doc +introspection sysprof test vim-syntax wayland +X xinerama"
 REQUIRED_USE="
 	|| ( aqua wayland X )
 	xinerama? ( X )
@@ -26,7 +26,7 @@ RESTRICT="test"
 # FIXME: introspection data is built against system installation of gtk+:3,
 # bug #????
 COMMON_DEPEND="
-	>=app-accessibility/at-spi2-core-2.46.0[introspection?,${MULTILIB_USEDEP}]
+	accessibility? ( >=app-accessibility/at-spi2-core-2.46.0[introspection?,${MULTILIB_USEDEP}] )
 	>=dev-libs/fribidi-0.19.7[${MULTILIB_USEDEP}]
 	>=dev-libs/glib-2.57.2:2[${MULTILIB_USEDEP}]
 	media-libs/fontconfig[${MULTILIB_USEDEP}]
@@ -105,6 +105,9 @@ PATCHES=(
 
 	# Fix broken autotools logic
 	"${FILESDIR}"/${PN}-3.22.20-libcloudproviders-automagic.patch
+
+	# get rid of gtk3-atk-bridge crap
+	"${FILESDIR}/${PN}"-3.22.19.atk-bridge.patch
 )
 
 strip_builddir() {
@@ -152,6 +155,7 @@ multilib_src_configure() {
 		$(use_enable X xkb)
 		$(use_enable X xrandr)
 		$(use_enable xinerama)
+		$(use_with accessibility atk-bridge)
 		# cloudprovider is not packaged in Gentoo yet
 		--disable-cloudproviders
 		--disable-papi
