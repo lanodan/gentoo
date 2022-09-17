@@ -27,7 +27,7 @@ S="${WORKDIR}/${P/_/-}"
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="+caps +cmdmon debug html libtomcrypt +nettle nss +ntp +nts +phc pps +readline +refclock +rtc samba +seccomp +sechash selinux"
+IUSE="+cmdmon debug html libtomcrypt +nettle nss +ntp +nts +phc pps +readline +refclock +rtc samba +seccomp +sechash selinux"
 # nettle > nss > libtomcrypt in configure
 REQUIRED_USE="
 	sechash? ( || ( nettle nss libtomcrypt ) )
@@ -55,6 +55,7 @@ DEPEND="
 RDEPEND="
 	${DEPEND}
 	selinux? ( sec-policy/selinux-chronyd )
+	>=sys-apps/openrc-0.45
 "
 BDEPEND="
 	html? ( dev-ruby/asciidoctor )
@@ -97,12 +98,6 @@ src_prepare() {
 }
 
 src_configure() {
-	if ! use caps ; then
-		sed -i \
-			-e 's/ -u ntp//' \
-			"${T}"/chronyd.conf examples/chronyd.service || die
-	fi
-
 	if ! use seccomp ; then
 		sed -i \
 			-e 's/ -F 2//' \
@@ -119,7 +114,7 @@ src_configure() {
 	local myconf=(
 		$(use_enable seccomp scfilter)
 
-		$(usev !caps '--disable-linuxcaps')
+		--disable-linuxcaps
 		$(usev !cmdmon '--disable-cmdmon')
 		$(usev debug '--enable-debug')
 
@@ -180,7 +175,7 @@ src_install() {
 	docinto examples
 	dodoc examples/*.example*
 
-	newtmpfiles - chronyd.conf <<<"d /run/chrony 0750 $(usex caps 'ntp ntp' 'root root')"
+	newtmpfiles - chronyd.conf <<<"d /run/chrony 0750 ntp ntp"
 
 	if use html ; then
 		docinto html
@@ -189,13 +184,8 @@ src_install() {
 
 	keepdir /var/{lib,log}/chrony
 
-	if use caps ; then
-		# Prepare a directory for the chrony.drift file (a la ntpsec)
-		# Ensures the environment is sane on new installs
-		# bug #711058
-		fowners -R ntp:ntp /var/{lib,log}/chrony
-		fperms -R 770 /var/lib/chrony
-	fi
+	fowners -R ntp:ntp /var/{lib,log}/chrony
+	fperms -R 770 /var/lib/chrony
 
 	insinto /etc/logrotate.d
 	newins "${FILESDIR}"/chrony-2.4-r1.logrotate chrony
@@ -206,15 +196,8 @@ src_install() {
 }
 
 pkg_preinst() {
-	HAD_CAPS=0
 	HAD_SECCOMP=0
 	HAD_PRE_NEW_SECCOMP_LEVEL=0
-
-	# See https://dev.gentoo.org/~zmedico/portage/doc/portage.html#package-ebuild-phases-after-2.1.5
-	# in "Ebuild Phases" for an explanation of why we need to save the variable beforehand
-	if has_version 'net-misc/chrony[caps]' ; then
-		HAD_CAPS=1
-	fi
 
 	if has_version 'net-misc/chrony[seccomp]' ; then
 		HAD_SECCOMP=1
@@ -229,17 +212,6 @@ pkg_preinst() {
 
 pkg_postinst() {
 	tmpfiles_process chronyd.conf
-
-	if [[ -n "${REPLACING_VERSIONS}" ]] ; then
-		if use caps && ! [[ ${HAD_CAPS} -eq 1 ]] ; then
-			# bug #719876
-			ewarn "Please adjust permissions on ${EROOT}/var/{lib,log}/chrony to be owned by ntp:ntp"
-			ewarn "e.g. chown -R ntp:ntp ${EROOT}/var/{lib,log}/chrony"
-			ewarn "This is necessary for chrony to drop privileges"
-		elif ! use caps && [[ ${HAD_CAPS} -eq 0 ]] ; then
-			ewarn "Please adjust permissions on ${EROOT}/var/{lib,log}/chrony to be owned by root:root"
-		fi
-	fi
 
 	# See bug #783915 for general discussion on enabling seccomp filtering
 	# by default.
