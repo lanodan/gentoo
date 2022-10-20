@@ -108,6 +108,7 @@ BDEPEND="
 #   - https://github.com/doxygen/doxygen/issues/9254
 RDEPEND="
 	acct-group/audio
+	acct-user/pipewire
 	acct-group/pipewire
 	media-libs/alsa-lib[${MULTILIB_USEDEP}]
 	sys-libs/ncurses:=[unicode(+)]
@@ -151,7 +152,6 @@ RDEPEND="
 	selinux? ( sys-libs/libselinux )
 	ssl? ( dev-libs/openssl:= )
 	systemd? ( sys-apps/systemd )
-	system-service? ( acct-user/pipewire )
 	v4l? ( media-libs/libv4l )
 	X? (
 		media-libs/libcanberra
