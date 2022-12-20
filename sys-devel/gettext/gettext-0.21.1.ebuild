@@ -95,6 +95,11 @@ src_prepare() {
 	if use elibc_musl || use elibc_Darwin; then
 		eapply "${FILESDIR}"/${PN}-0.21-musl-omit_setlocale_lock.patch
 	fi
+
+	rm gettext-tools/gnulib-lib/javaversion.class gettext-tools/m4/csharpexec-test.exe || die
+	sed -i 's;javaversion.class;;g' gettext-tools/gnulib-lib/Makefile.in || die
+	sed -i 's;csharpexec-test.exe;;g' gettext-tools/m4/Makefile.in gettext-tools/m4/Makefile.am || die
+	sed -i 's;^.*\.class;;g' gettext-tools/examples/Makefile.in gettext-tools/examples/Makefile.am || die
 }
 
 multilib_src_configure() {
