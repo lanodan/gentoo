@@ -1,0 +1,147 @@
+From b37958bec41b9cbff0968f5ffe176609dce4ff55 Mon Sep 17 00:00:00 2001
+From: "Haelwenn (lanodan) Monnier" <contact@hacktivis.me>
+Date: Sat, 14 Jan 2023 08:16:19 +0100
+Subject: [PATCH] CMake: Generate and install squirrel.pc
+
+Closes: https://github.com/albertodemichelis/squirrel/issues/259
+---
+ CMakeLists.txt          | 35 +++++++++++++++++++++++++++++++++--
+ sqstdlib/CMakeLists.txt |  5 +----
+ squirrel.pc.in          | 12 ++++++++++++
+ squirrel/CMakeLists.txt |  5 +----
+ 4 files changed, 47 insertions(+), 10 deletions(-)
+ create mode 100644 squirrel.pc.in
+
+Note: This patch got rebased on v3.2
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index dc35b6f..8ef293c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,5 +1,10 @@
+-cmake_minimum_required(VERSION 3.4)
+-project(squirrel VERSION 3.1 LANGUAGES C CXX)
++cmake_minimum_required(VERSION 3.12)
++project(squirrel
++  VERSION 3.1
++  DESCRIPTION "The Squirrel programming language"
++  HOMEPAGE_URL "http://squirrel-lang.org/"
++  LANGUAGES C CXX
++  )
+ 
+ option(DISABLE_STATIC "Avoid building/installing static libraries.")
+ option(LONG_OUTPUT_NAMES "Use longer names for binaries and libraries: squirrel3 (not sq).")
+@@ -33,6 +38,15 @@ elseif(MSVC)
+   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+ endif()
+ 
++# Need to be defined here to be visible to squirrel.pc.in
++if(LONG_OUTPUT_NAMES)
++  set(LIBSQUIRREL_NAME squirrel3)
++  set(SQSTDLIB_NAME sqstdlib3)
++else()
++  set(LIBSQUIRREL_NAME squirrel)
++  set(SQSTDLIB_NAME sqstdlib)
++endif()
++
+ add_subdirectory(squirrel)
+ add_subdirectory(sqstdlib)
+ add_subdirectory(sq)
+@@ -92,6 +106,12 @@ export(EXPORT squirrel
+   FILE "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/squirrel/squirrel-targets.cmake"
+   )
+ 
++configure_file(
++  "${CMAKE_CURRENT_SOURCE_DIR}/squirrel.pc.in"
++  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
++  @ONLY
++)
++
+ if(NOT SQ_DISABLE_INSTALLER AND NOT SQ_DISABLE_CMAKE_INSTALLER)
+   install(FILES
+     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/squirrel/squirrel-config-version.cmake"
+@@ -100,6 +120,17 @@ if(NOT SQ_DISABLE_INSTALLER AND NOT SQ_DISABLE_CMAKE_INSTALLER)
+     COMPONENT Development
+     )
+ 
++  # pc(5) only allows static variant to have extra flags, not an entirely new
++  # set of flags. While it's uncommon, a way to do it would be to generate a
++  # ${PROJECT_NAME}_static.pc file.
++  if(NOT DISABLE_DYNAMIC)
++    install(
++      FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
++      DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
++      COMPONENT Development
++    )
++  endif()
++
+   install(EXPORT squirrel
+     NAMESPACE squirrel::
+     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/squirrel"
+diff --git a/sqstdlib/CMakeLists.txt b/sqstdlib/CMakeLists.txt
+index 34fba82..a606ba8 100644
+--- a/sqstdlib/CMakeLists.txt
++++ b/sqstdlib/CMakeLists.txt
+@@ -11,6 +11,7 @@ if(NOT DISABLE_DYNAMIC)
+   add_library(sqstdlib SHARED ${SQSTDLIB_SRC})
+   add_library(squirrel::sqstdlib ALIAS sqstdlib)
+   set_property(TARGET sqstdlib PROPERTY EXPORT_NAME sqstdlib)
++  set_property(TARGET sqstdlib PROPERTY OUTPUT_NAME ${SQSTDLIB_NAME})
+   target_link_libraries(sqstdlib squirrel)
+   if(NOT SQ_DISABLE_INSTALLER)
+     install(TARGETS sqstdlib EXPORT squirrel
+@@ -42,10 +43,6 @@ if(NOT DISABLE_STATIC)
+ endif()
+ 
+ if(LONG_OUTPUT_NAMES)
+-  if(NOT DISABLE_DYNAMIC)
+-    set_target_properties(sqstdlib PROPERTIES OUTPUT_NAME sqstdlib3)
+-  endif()
+-
+   if(NOT DISABLE_STATIC)
+     set_target_properties(sqstdlib_static PROPERTIES OUTPUT_NAME sqstdlib3_static)
+   endif()
+diff --git a/squirrel.pc.in b/squirrel.pc.in
+new file mode 100644
+index 0000000..ea66485
+--- /dev/null
++++ b/squirrel.pc.in
+@@ -0,0 +1,12 @@
++prefix=@CMAKE_INSTALL_PREFIX@
++libdir=@CMAKE_INSTALL_FULL_LIBDIR@
++includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
++
++Name: @PROJECT_NAME@
++Version: @PROJECT_VERSION@
++Description: @PROJECT_DESCRIPTION@
++URL: @PROJECT_HOMEPAGE_URL@
++Requires:
++Provides: squirrel3 = @PROJECT_VERSION@
++Libs: -L${libdir} -l@LIBSQUIRREL_NAME@ -l@SQSTDLIB_NAME@
++Cflags: -I${includedir}
+diff --git a/squirrel/CMakeLists.txt b/squirrel/CMakeLists.txt
+index f96b958..c8a31b9 100644
+--- a/squirrel/CMakeLists.txt
++++ b/squirrel/CMakeLists.txt
+@@ -15,6 +15,7 @@ if(NOT DISABLE_DYNAMIC)
+   add_library(squirrel SHARED ${SQUIRREL_SRC})
+   add_library(squirrel::squirrel ALIAS squirrel)
+   set_property(TARGET squirrel PROPERTY EXPORT_NAME squirrel)
++  set_property(TARGET squirrel PROPERTY OUTPUT_NAME ${LIBSQUIRREL_NAME})
+   if(NOT SQ_DISABLE_INSTALLER)
+     install(TARGETS squirrel EXPORT squirrel
+       RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Libraries
+@@ -45,10 +46,6 @@ if(NOT DISABLE_STATIC)
+ endif()
+ 
+ if(LONG_OUTPUT_NAMES)
+-  if(NOT DISABLE_DYNAMIC)
+-    set_target_properties(squirrel PROPERTIES OUTPUT_NAME squirrel3)
+-  endif()
+-
+   if(NOT DISABLE_STATIC)
+     set_target_properties(squirrel_static PROPERTIES OUTPUT_NAME squirrel3_static)
+   endif()
+-- 
+2.41.0
+
