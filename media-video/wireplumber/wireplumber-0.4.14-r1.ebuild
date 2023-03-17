@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -14,20 +14,20 @@ LUA_COMPAT=( lua5-{3,4} )
 
 inherit lua-single meson systemd
 
-DESCRIPTION="Replacement for pipewire-media-session"
-HOMEPAGE="https://gitlab.freedesktop.org/pipewire/wireplumber"
-
 if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://gitlab.freedesktop.org/pipewire/${PN}.git"
 	EGIT_BRANCH="master"
 	inherit git-r3
 else
 	SRC_URI="https://gitlab.freedesktop.org/pipewire/${PN}/-/archive/${PV}/${P}.tar.bz2"
-	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86"
+	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~sparc ~x86"
 fi
 
+DESCRIPTION="Replacement for pipewire-media-session"
+HOMEPAGE="https://gitlab.freedesktop.org/pipewire/wireplumber"
+
 LICENSE="MIT"
-SLOT="0/0.5"
+SLOT="0/0.4"
 IUSE="dbus elogind system-service systemd test"
 
 REQUIRED_USE="
@@ -44,19 +44,23 @@ BDEPEND="
 	dev-util/gdbus-codegen
 	dev-util/glib-utils
 	sys-devel/gettext
-	test? ( sys-apps/dbus )
 "
+
 DEPEND="
 	${LUA_DEPS}
-	>=dev-libs/glib-2.68
-	>=media-video/pipewire-1.0.5-r1:=
+	>=dev-libs/glib-2.62
+	>=media-video/pipewire-0.3.65-r1:=
 	virtual/libintl
 	elogind? ( sys-auth/elogind )
 	systemd? ( sys-apps/systemd )
 	test? ( dbus? ( sys-apps/dbus ) )
 "
-RDEPEND="
-	${DEPEND}
+
+# Any dev-lua/* deps get declared like this inside RDEPEND:
+#	$(lua_gen_cond_dep '
+#		dev-lua/<NAME>[${LUA_USEDEP}]
+#	')
+RDEPEND="${DEPEND}
 	system-service? (
 		acct-user/pipewire
 		acct-group/pipewire
@@ -66,10 +70,7 @@ RDEPEND="
 DOCS=( {NEWS,README}.rst )
 
 PATCHES=(
-	# Defer enabling sound server parts to media-video/pipewire
-	# TODO: Soon, we should be able to migrate to just a dropin at
-	# /usr/share. See https://gitlab.freedesktop.org/pipewire/wireplumber/-/issues/652#note_2399735.
-	"${FILESDIR}"/${PN}-0.5.6-config-disable-sound-server-parts.patch
+	"${FILESDIR}"/${PN}-0.4.10-config-disable-sound-server-parts.patch # defer enabling sound server parts to media-video/pipewire
 )
 
 src_configure() {
@@ -77,11 +78,9 @@ src_configure() {
 		-Ddaemon=true
 		-Dtools=true
 		-Dmodules=true
-		# Ebuild not wired up yet (Sphinx, Doxygen?)
-		-Ddoc=disabled
-		# Only used for Sphinx doc generation
-		-Dintrospection=disabled
-		-Dsystem-lua=true
+		-Ddoc=disabled # Ebuild not wired up yet (Sphinx, Doxygen?)
+		-Dintrospection=disabled # Only used for Sphinx doc generation
+		-Dsystem-lua=true # We always unbundle everything we can
 		-Dsystem-lua-version=$(ver_cut 1-2 $(lua_get_version))
 		$(meson_feature elogind)
 		$(meson_feature systemd)
@@ -99,8 +98,12 @@ src_configure() {
 src_install() {
 	meson_src_install
 
-	mv "${ED}"/usr/share/doc/wireplumber/* "${ED}"/usr/share/doc/${PF} || die
-	rmdir "${ED}"/usr/share/doc/wireplumber || die
+	# We copy the default config, so that Gentoo tools can pick up on any
+	# updates and /etc does not end up with stale overrides.
+	# If a reflinking CoW filesystem is used (e.g. Btrfs), then the files
+	# will not actually get stored twice until modified.
+	insinto /etc
+	doins -r "${ED}"/usr/share/wireplumber
 }
 
 pkg_postinst() {
@@ -117,7 +120,6 @@ pkg_postinst() {
 		ewarn "or, if it does exist, that any reference to"
 		ewarn "${EROOT}/usr/bin/pipewire-media-session is commented out (begins with a #)."
 	fi
-
 	if use system-service; then
 		ewarn
 		ewarn "WARNING: you have enabled the system-service USE flag, which installs"
