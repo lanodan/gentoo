@@ -70,6 +70,12 @@ dev-qt/qtscript:5
 # which ensures a sound server is installed via PDEPEND.
 media-sound/pulseaudio
 
+# Haelwenn (lanodan) Monnier <contact@hacktivis.me> (2023-04-17)
+# No longer maintained, use dev-libs/libpcre2
+# https://www.openwall.com/lists/oss-security/2023/04/11/1
+# https://bugs.gentoo.org/show_bug.cgi?id=837980
+dev-libs/libpcre
+
 # Sam James <sam@gentoo.org> (2023-04-07)
 # Inactive upstream, doesn't support newer Rubies.
 # Please port your package to use dev-ruby/erubis instead.
