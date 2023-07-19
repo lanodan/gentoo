@@ -65,6 +65,11 @@ net-p2p/bitcoind
 # Bug 915779
 dev-qt/qtscript:5
 
+# Haelwenn (lanodan) Monnier <contact@hacktivis.me> (2023-07-19)
+# "has been end-of-lifed by its maintainer. Use cvs-fast-export instead."
+# — http://www.catb.org/~esr/cvsps/
+dev-vcs/cvsps
+
 # Andreas Sturmlechner <asturm@gentoo.org> (2023-06-10)
 # Obsolete transitional meta package. Switch to media-libs/libpulse
 # which ensures a sound server is installed via PDEPEND.
