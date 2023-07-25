@@ -65,6 +65,11 @@ net-p2p/bitcoind
 # Bug 915779
 dev-qt/qtscript:5
 
+# Haelwenn (lanodan) Monnier <contact@hacktivis.me> (2023-07-25)
+# Dead upstream, known vulnerabilities (CVE-2021-42260)
+# Author switched to tinyxml2
+dev-libs/tinyxml
+
 # Haelwenn (lanodan) Monnier <contact@hacktivis.me> (2023-07-19)
 # "has been end-of-lifed by its maintainer. Use cvs-fast-export instead."
 # — http://www.catb.org/~esr/cvsps/
