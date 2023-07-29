@@ -12,15 +12,15 @@ DESCRIPTION="Framework for managing menu and toolbar actions in an abstract way"
 
 LICENSE="LGPL-2+"
 KEYWORDS="amd64 arm64 ppc64 ~riscv ~x86"
-IUSE=""
+IUSE="+dbus"
 
 # slot op: includes QtCore/private/qlocale_p.h
 DEPEND="
-	>=dev-qt/qtbase-${QTMIN}:6=[dbus,gui,network,ssl,widgets,xml]
+	dbus? ( =kde-frameworks/kglobalaccel-${PVCUT}*:6 )
+	>=dev-qt/qtbase-${QTMIN}:6=[dbus?,gui,network,ssl,widgets,xml]
 	=kde-frameworks/kconfig-${PVCUT}*:6
 	=kde-frameworks/kconfigwidgets-${PVCUT}*:6
 	=kde-frameworks/kcoreaddons-${PVCUT}*:6
-	=kde-frameworks/kglobalaccel-${PVCUT}*:6
 	=kde-frameworks/kguiaddons-${PVCUT}*:6
 	=kde-frameworks/ki18n-${PVCUT}*:6
 	=kde-frameworks/kiconthemes-${PVCUT}*:6
@@ -37,3 +37,11 @@ CMAKE_SKIP_TESTS=(
 	# bug 808216
 	ktooltiphelper_unittest
 )
+
+src_prepare() {
+	if use !dbus; then
+		sed -i '/if(NOT ANDROID)/,/endif()/d' CMakeLists.txt || die
+	fi
+
+	ecm_src_prepare
+}
