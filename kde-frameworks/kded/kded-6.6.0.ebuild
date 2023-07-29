@@ -13,18 +13,26 @@ DESCRIPTION="Central daemon of KDE workspaces"
 
 LICENSE="LGPL-2+"
 KEYWORDS="amd64 arm64 ppc64 ~riscv ~x86"
-IUSE="+man"
+IUSE="+dbus +man"
 
 DEPEND="
-	>=dev-qt/qtbase-${QTMIN}:6[dbus,gui,widgets]
-	=kde-frameworks/kconfig-${PVCUT}*:6[dbus]
+	dbus? ( =kde-frameworks/kdbusaddons-${PVCUT}*:6 )
+	>=dev-qt/qtbase-${QTMIN}:6[dbus?,gui,widgets]
+	=kde-frameworks/kconfig-${PVCUT}*:6[dbus?]
 	=kde-frameworks/kcoreaddons-${PVCUT}*:6
 	=kde-frameworks/kcrash-${PVCUT}*:6
-	=kde-frameworks/kdbusaddons-${PVCUT}*:6
 	=kde-frameworks/kservice-${PVCUT}*:6
 "
 RDEPEND="${DEPEND}"
 BDEPEND="man? ( >=kde-frameworks/kdoctools-${PVCUT}:6 )"
+
+src_prepare() {
+	if use !dbus; then
+		sed -i '/if (NOT ANDROID)/,/endif()/d' CMakeLists.txt || die
+	fi
+
+	ecm_src_prepare
+}
 
 src_configure() {
 	local mycmakeargs=(
