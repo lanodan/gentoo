@@ -16,6 +16,7 @@ HOMEPAGE="
 "
 LICENSE="MIT"
 SLOT="0"
+IUSE="+omemo"
 
 if [[ "${PV}" == "9999" ]]; then
 	EGIT_REPO_URI="https://codeberg.org/poezio/slixmpp.git"
@@ -31,7 +32,7 @@ DEPEND="
 RDEPEND="
 	dev-python/aiodns[${PYTHON_USEDEP}]
 	dev-python/aiohttp[${PYTHON_USEDEP}]
-	dev-python/cryptography[${PYTHON_USEDEP}]
+	omemo? ( dev-python/cryptography[${PYTHON_USEDEP}] )
 	dev-python/defusedxml[${PYTHON_USEDEP}]
 	dev-python/pyasn1-modules[${PYTHON_USEDEP}]
 	dev-python/pyasn1[${PYTHON_USEDEP}]
