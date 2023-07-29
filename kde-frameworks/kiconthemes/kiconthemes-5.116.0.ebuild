@@ -11,12 +11,12 @@ inherit ecm frameworks.kde.org
 DESCRIPTION="Framework for icon theming and configuration"
 LICENSE="LGPL-2+"
 KEYWORDS="amd64 ~arm arm64 ~loong ppc64 ~riscv x86"
-IUSE=""
+IUSE="+dbus"
 
 RESTRICT="test" # bug 574770
 
 RDEPEND="
-	>=dev-qt/qtdbus-${QTMIN}:5
+	dbus? ( >=dev-qt/qtdbus-${QTMIN}:5 )
 	>=dev-qt/qtgui-${QTMIN}:5
 	>=dev-qt/qtsvg-${QTMIN}:5
 	>=dev-qt/qtwidgets-${QTMIN}:5
@@ -30,3 +30,11 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	test? ( >=dev-qt/qtdeclarative-${QTMIN}:5 )
 "
+
+src_prepare() {
+	if use !dbus; then
+		sed -i '/if (NOT ANDROID)/,/endif()/d' CMakeLists.txt || die
+	fi
+
+	ecm_src_prepare
+}

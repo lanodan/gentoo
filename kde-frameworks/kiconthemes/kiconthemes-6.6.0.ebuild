@@ -12,13 +12,13 @@ DESCRIPTION="Framework for icon theming and configuration"
 
 LICENSE="LGPL-2+"
 KEYWORDS="amd64 arm64 ppc64 ~riscv ~x86"
-IUSE=""
+IUSE="+dbus"
 
 RESTRICT="test" # bug 574770
 
 # slot op: Uses Qt6::GuiPrivate for qiconloader_p.h, qguiapplication_p.h
 RDEPEND="
-	>=dev-qt/qtbase-${QTMIN}:6=[dbus,gui,widgets]
+	>=dev-qt/qtbase-${QTMIN}:6=[dbus?,gui,widgets]
 	>=dev-qt/qtdeclarative-${QTMIN}:6
 	>=dev-qt/qtsvg-${QTMIN}:6
 	=kde-frameworks/breeze-icons-${PVCUT}*:6
@@ -30,3 +30,11 @@ RDEPEND="
 	=kde-frameworks/kwidgetsaddons-${PVCUT}*:6
 "
 DEPEND="${RDEPEND}"
+
+src_prepare() {
+	if use !dbus; then
+		sed -i '/if (NOT ANDROID)/,/endif()/d' CMakeLists.txt || die
+	fi
+
+	ecm_src_prepare
+}
