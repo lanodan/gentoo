@@ -60,6 +60,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-2.2-backport-pr30.patch
 	"${FILESDIR}"/${PN}-2.2-make-4.4.patch
 	"${FILESDIR}"/${PN}-2.2-backport-pr66.patch
+	"${FILESDIR}"/${PN}-2.2-backport-pr60.patch
 )
 
 get_audio() {
