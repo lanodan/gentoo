@@ -17,6 +17,8 @@ SLOT="0"
 KEYWORDS="amd64 arm64 ~ppc64 ~riscv"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
+IUSE="+dbus"
+
 RESTRICT="test"
 
 COMMON_DEPEND="
@@ -28,7 +30,7 @@ DEPEND="${COMMON_DEPEND}
 RDEPEND="${COMMON_DEPEND}
 	~sys-libs/libapparmor-${PV}[python,${PYTHON_USEDEP}]
 	~sys-apps/apparmor-${PV}
-	dev-python/notify2[${PYTHON_USEDEP}]
+	dbus? ( dev-python/notify2[${PYTHON_USEDEP}] )
 	dev-python/psutil[${PYTHON_USEDEP}]"
 
 S=${WORKDIR}/apparmor-${PV}
