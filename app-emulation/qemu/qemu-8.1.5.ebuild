@@ -899,6 +899,11 @@ src_install() {
 			dosym ../ipxe/10222000.rom /usr/share/qemu/pxe-pcnet.rom
 			dosym ../ipxe/10ec8139.rom /usr/share/qemu/pxe-rtl8139.rom
 			dosym ../ipxe/1af41000.rom /usr/share/qemu/pxe-virtio.rom
+			dosym ../ipxe/15ad07b0.rom /usr/share/qemu/pxe-vmxnet3.rom
+
+			for rom in e1000 e1000e eepro100 ne2k_pci pcnet rtl8139 virtio vmxnet3; do
+				dosym ../ipxe/efi-"${rom}".rom /usr/share/qemu/efi-"${rom}".rom
+			done
 		fi
 	fi
 
