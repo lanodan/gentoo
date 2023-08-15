@@ -496,6 +496,8 @@ qemu_src_configure() {
 		--disable-strip
 		--disable-download
 
+		--disable-install-blobs
+
 		# bug #746752: TCG interpreter has a few limitations:
 		# - it does not support FPU
 		# - it's generally slower on non-self-modifying code
