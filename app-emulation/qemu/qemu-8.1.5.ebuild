@@ -290,10 +290,6 @@ BDEPEND="
 CDEPEND="
 	${ALL_DEPEND//\[static-libs(+)]}
 	${SOFTMMU_TOOLS_DEPEND//\[static-libs(+)]}
-	qemu_softmmu_targets_i386? ( ${X86_FIRMWARE_DEPEND} )
-	qemu_softmmu_targets_x86_64? ( ${X86_FIRMWARE_DEPEND} )
-	qemu_softmmu_targets_ppc? ( ${PPC_FIRMWARE_DEPEND} )
-	qemu_softmmu_targets_ppc64? ( ${PPC_FIRMWARE_DEPEND} )
 "
 DEPEND="
 	${CDEPEND}
@@ -307,6 +303,10 @@ RDEPEND="
 		sec-policy/selinux-qemu
 		sys-libs/libselinux
 	)
+	qemu_softmmu_targets_i386? ( ${X86_FIRMWARE_DEPEND} )
+	qemu_softmmu_targets_x86_64? ( ${X86_FIRMWARE_DEPEND} )
+	qemu_softmmu_targets_ppc? ( ${PPC_FIRMWARE_DEPEND} )
+	qemu_softmmu_targets_ppc64? ( ${PPC_FIRMWARE_DEPEND} )
 "
 
 PATCHES=(
