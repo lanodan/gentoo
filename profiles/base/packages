@@ -30,8 +30,6 @@
 *app-alternatives/sh
 *app-alternatives/tar
 *app-admin/eselect
-*app-arch/bzip2
-*app-arch/gzip
 *app-arch/xz-utils
 *app-shells/bash:0
 *dev-build/make
@@ -45,7 +43,6 @@
 # Much of the tree relies on newer features like "-exec +".
 # Force a recent stable version so people stay up-to-date.
 *>=sys-apps/findutils-4.4
-*sys-apps/gawk
 *sys-apps/grep
 *sys-apps/kbd
 *sys-apps/kmod
