@@ -31,7 +31,7 @@ RESTRICT="!test? ( test )"
 
 BDEPEND="
 	${PYTHON_DEPS}
-	>=app-arch/tar-1.27
+	app-alternatives/tar
 	>=dev-build/meson-1.3.0-r1
 	>=sys-apps/sed-4.0.5
 	sys-devel/patch
@@ -54,7 +54,7 @@ BDEPEND="
 RDEPEND="
 	${PYTHON_DEPS}
 	acct-user/portage
-	>=app-arch/tar-1.27
+	app-alternatives/tar
 	app-arch/zstd
 	>=app-misc/pax-utils-0.1.17
 	dev-lang/python-exec:2
