@@ -35,7 +35,7 @@ RESTRICT="!test? ( test )"
 # >=meson-1.2.1-r1 for bug #912051
 BDEPEND="
 	${PYTHON_DEPS}
-	>=app-arch/tar-1.27
+	app-alternatives/tar
 	>=dev-build/meson-1.2.1-r1
 	|| (
 		>=dev-build/meson-1.3.0-r1
@@ -65,7 +65,7 @@ BDEPEND="
 RDEPEND="
 	${PYTHON_DEPS}
 	acct-user/portage
-	>=app-arch/tar-1.27
+	app-alternatives/tar
 	app-arch/zstd
 	>=app-misc/pax-utils-0.1.17
 	dev-lang/python-exec:2

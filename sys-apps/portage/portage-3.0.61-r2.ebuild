@@ -50,7 +50,7 @@ BDEPEND="
 "
 DEPEND="
 	${PYTHON_DEPS}
-	>=app-arch/tar-1.27
+	app-alternatives/tar
 	dev-lang/python-exec:2
 	>=sys-apps/sed-4.0.5
 	sys-devel/patch
@@ -69,7 +69,7 @@ DEPEND="
 RDEPEND="
 	${PYTHON_DEPS}
 	acct-user/portage
-	>=app-arch/tar-1.27
+	app-alternatives/tar
 	app-arch/zstd
 	>=app-misc/pax-utils-0.1.17
 	dev-lang/python-exec:2
