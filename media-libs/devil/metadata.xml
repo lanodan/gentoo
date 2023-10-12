@@ -7,6 +7,7 @@
 	</maintainer>
 	<use>
 		<flag name="allegro">Add support for Allegro</flag>
+		<flag name="jasper">Add support for <pkg>media-libs/jasper</pkg></flag>
 	</use>
 	<upstream>
 		<remote-id type="github">DentonW/DevIL</remote-id>
