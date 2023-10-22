@@ -30,6 +30,10 @@ PATCHES=(
 src_prepare() {
 	default
 	eapply -p0 "${DISTDIR}"/SDL_Pango-0.1.2-API-adds.patch
+
+	# Inspired by Fedora's SDL_Pango-0.1.2-fedora-c99.patch
+	sed -i -e '/SDL_Pango.h/i#define __FT2_BUILD_UNIX_H__' src/SDL_Pango.c || die
+
 	eautoreconf
 }
 
