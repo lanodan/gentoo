@@ -5,6 +5,9 @@
 		<email>sound@gentoo.org</email>
 		<name>Gentoo Sound project</name>
 	</maintainer>
+	<use>
+		<flag name="doc">Build documentation and manpage with <pkg>dev-python/sphinx</pkg></flag>
+	</use>
 	<upstream>
 		<remote-id type="github">MusicPlayerDaemon/mpc</remote-id>
 	</upstream>
