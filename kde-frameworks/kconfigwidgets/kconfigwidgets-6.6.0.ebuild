@@ -12,7 +12,7 @@ DESCRIPTION="Framework providing an assortment of configuration-related widgets"
 
 LICENSE="LGPL-2+"
 KEYWORDS="amd64 arm64 ppc64 ~riscv ~x86"
-IUSE=""
+IUSE="+dbus"
 
 CMAKE_SKIP_TESTS=(
 	# bugs: 864250
@@ -22,7 +22,7 @@ CMAKE_SKIP_TESTS=(
 )
 
 RDEPEND="
-	>=dev-qt/qtbase-${QTMIN}:6[dbus,gui,widgets]
+	>=dev-qt/qtbase-${QTMIN}:6[dbus?,gui,widgets]
 	=kde-frameworks/kcodecs-${PVCUT}*:6
 	=kde-frameworks/kcolorscheme-${PVCUT}*:6
 	=kde-frameworks/kconfig-${PVCUT}*:6

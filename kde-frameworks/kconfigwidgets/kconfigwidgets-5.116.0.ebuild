@@ -12,13 +12,15 @@ DESCRIPTION="Framework providing an assortment of configuration-related widgets"
 
 LICENSE="LGPL-2+"
 KEYWORDS="amd64 ~arm arm64 ~loong ppc64 ~riscv x86"
-IUSE="+man"
+IUSE="+dbus +man"
 
 RDEPEND="
-	>=dev-qt/qtdbus-${QTMIN}:5
+	dbus? (
+		>=dev-qt/qtdbus-${QTMIN}:5
+		=kde-frameworks/kauth-${PVCUT}*:5
+	)
 	>=dev-qt/qtgui-${QTMIN}:5
 	>=dev-qt/qtwidgets-${QTMIN}:5
-	=kde-frameworks/kauth-${PVCUT}*:5
 	=kde-frameworks/kcodecs-${PVCUT}*:5
 	=kde-frameworks/kconfig-${PVCUT}*:5
 	=kde-frameworks/kcoreaddons-${PVCUT}*:5
@@ -35,6 +37,14 @@ CMAKE_SKIP_TESTS=(
 	# bugs: 864250
 	kstandardactiontest
 )
+
+src_prepare() {
+	if use !dbus; then
+		sed -i '/if (NOT ANDROID)/,/endif()/d' CMakeLists.txt || die
+	fi
+
+	ecm_src_prepare
+}
 
 src_configure() {
 	local mycmakeargs=(
