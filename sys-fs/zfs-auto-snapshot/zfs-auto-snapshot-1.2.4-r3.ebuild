@@ -33,6 +33,16 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-1.2.4-drop-which.patch
 )
 
+src_prepare() {
+	default
+
+	# Use standard -u option for date
+	sed -i 's;date --utc;date -u;' src/zfs-auto-snapshot.sh || die
+
+	# Standard cron doesn't have user field
+	sed -i 's; root ;;' etc/zfs-auto-snapshot.cron.frequent || die
+}
+
 src_install() {
 	if use default-exclude; then
 		for cronfile in etc/"${PN}".cron.{daily,hourly,monthly,weekly}; do
