@@ -10,16 +10,17 @@ HOMEPAGE="https://gitlab.gnome.org/GNOME/glib-networking"
 
 LICENSE="LGPL-2.1+"
 SLOT="0"
-IUSE="+gnome +libproxy +ssl test"
+IUSE="+gnome +gnutls openssl +libproxy +ssl test"
+REQUIRED_USE="ssl? ( || ( gnutls openssl ) )"
 RESTRICT="!test? ( test )"
 KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
 
 RDEPEND="
 	>=dev-libs/glib-2.73.3:2[${MULTILIB_USEDEP}]
 	libproxy? ( >=net-libs/libproxy-0.4.16[${MULTILIB_USEDEP}] )
-	>=net-libs/gnutls-3.7.4:=[${MULTILIB_USEDEP}]
+	gnutls? ( >=net-libs/gnutls-3.7.4:=[${MULTILIB_USEDEP}] )
+	openssl? ( dev-libs/openssl:0=[${MULTILIB_USEDEP}] )
 	ssl? ( app-misc/ca-certificates )
-	gnome? ( gnome-base/gsettings-desktop-schemas )
 "
 DEPEND="${RDEPEND}
 	test? ( net-libs/gnutls[pkcs11] )
@@ -46,8 +47,8 @@ src_prepare() {
 
 multilib_src_configure() {
 	local emesonargs=(
-		-Dgnutls=enabled
-		-Dopenssl=disabled
+		$(meson_feature gnutls)
+		$(meson_feature openssl)
 		$(meson_feature !libproxy environment_proxy)
 		$(meson_feature libproxy)
 		$(meson_feature gnome gnome_proxy)
