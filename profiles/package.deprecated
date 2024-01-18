@@ -65,6 +65,11 @@ net-p2p/bitcoind
 # Bug 915779
 dev-qt/qtscript:5
 
+# Haelwenn (lanodan) Monnier <contact@hacktivis.me> (2023-01-18)
+# Nobody should use imake anymore, X moved off from it in 2005.
+# https://lists.x.org/archives/xorg-announce/2024-January/003440.html
+x11-misc/imake
+
 # Haelwenn (lanodan) Monnier <contact@hacktivis.me> (2023-07-25)
 # Dead upstream, known vulnerabilities (CVE-2021-42260)
 # Author switched to tinyxml2
