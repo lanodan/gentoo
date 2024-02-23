@@ -19,12 +19,12 @@ fi
 
 LICENSE="ZLIB"
 SLOT="0"
-IUSE="doc test"
+IUSE="+accessibility doc test"
 
 RESTRICT="!test? ( test )"
 
 RDEPEND="
-	app-accessibility/at-spi2-core
+	accessibility? ( app-accessibility/at-spi2-core )
 	dev-libs/glib:2
 	dev-libs/json-glib:=
 	media-libs/harfbuzz:=
