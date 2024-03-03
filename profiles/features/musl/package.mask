@@ -81,6 +81,11 @@ dev-ada/lal-refactor
 # requires glibc-specific locale handling. (#923907)
 games-strategy/seven-kingdoms
 
+# Haelwenn (lanodan) Monnier <contact@hacktivis.me> (2024-03-03)
+# media-libs/libv4l (at least between 1.22.1 and 1.26.1) function
+# signature for ioctl doesn't matches POSIX/musl.
+media-libs/libv4l
+
 # Joshua Kinard <kumba@gentoo.org> (2024-02-27)
 # app-arch/lrzip-next cannot work w/ musl's pthreads at
 # this time. (#925547)
