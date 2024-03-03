@@ -60,7 +60,7 @@ IUSE="accessibility +aio alsa bpf bzip2 capstone +curl debug ${QEMU_DOC_USEFLAG}
 	ncurses nfs nls numa opengl +oss pam +pin-upstream-blobs pipewire
 	plugins +png pulseaudio python rbd sasl +seccomp sdl sdl-image selinux
 	+slirp
-	smartcard snappy spice ssh static-user systemtap test udev usb
+	smartcard snappy spice ssh static-user systemtap test udev +uefi usb
 	usbredir vde +vhost-net virgl virtfs +vnc vte xattr xen
 	zstd"
 
@@ -240,16 +240,16 @@ SEABIOS_VERSION="1.16.0"
 
 X86_FIRMWARE_DEPEND="
 	pin-upstream-blobs? (
-		~sys-firmware/edk2-bin-${EDK2_OVMF_VERSION}
+		uefi? ( ~sys-firmware/edk2-bin-${EDK2_OVMF_VERSION} )
 		~sys-firmware/ipxe-1.21.1[binary,qemu]
 		~sys-firmware/seabios-bin-${SEABIOS_VERSION}
 		~sys-firmware/sgabios-0.1_pre10[binary]
 	)
 	!pin-upstream-blobs? (
-		|| (
+		uefi? ( || (
 			>=sys-firmware/edk2-${EDK2_OVMF_VERSION}
 			>=sys-firmware/edk2-bin-${EDK2_OVMF_VERSION}
-		)
+		) )
 		sys-firmware/ipxe[qemu]
 		|| (
 			>=sys-firmware/seabios-${SEABIOS_VERSION}[seavgabios]
