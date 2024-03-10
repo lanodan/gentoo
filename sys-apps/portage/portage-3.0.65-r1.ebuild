@@ -25,7 +25,7 @@ fi
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="apidoc build doc gentoo-dev +ipc +native-extensions +rsync-verify selinux test xattr"
+IUSE="apidoc build doc gentoo-dev +gnupg +ipc +native-extensions +rsync-verify selinux test xattr"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 RESTRICT="!test? ( test )"
 
@@ -73,10 +73,12 @@ RDEPEND="
 	>=sys-apps/findutils-4.9
 	!build? (
 		>=app-admin/eselect-1.2
-		app-portage/getuto
 		>=app-shells/bash-5.0:0
-		>=sec-keys/openpgp-keys-gentoo-release-20240703
 		>=sys-apps/sed-4.0.5
+		gnupg? (
+			app-portage/getuto
+			>=sec-keys/openpgp-keys-gentoo-release-20240703
+		)
 		rsync-verify? (
 			>=app-crypt/gnupg-2.2.4-r2[ssl(-)]
 			>=app-portage/gemato-14.5[${PYTHON_USEDEP}]
