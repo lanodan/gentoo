@@ -26,8 +26,6 @@ BDEPEND=""
 
 DOCS=( AUTHORS ChangeLog NEWS README.md RELEASE )
 
-PATCHES=( "${FILESDIR}/gst-plugins-good-1.22.9-soup-tests-automagic.patch" )
-
 multilib_src_configure() {
 	GST_PLUGINS_NOAUTO="bz2"
 
