@@ -59,11 +59,6 @@ DOCS=( AUTHORS ChangeLog NEWS README.md RELEASE )
 # FIXME: gstharness.c:889:gst_harness_new_with_padnames: assertion failed: (element != NULL)
 RESTRICT="test"
 
-PATCHES=(
-	"${FILESDIR}"/0001-meson-Fix-libdrm-and-vaapi-configure-checks.patch
-	"${FILESDIR}"/0002-meson-Add-feature-options-for-optional-va-deps-libdr.patch
-)
-
 src_prepare() {
 	default
 	addpredict /dev # Prevent sandbox violations bug #570624
