@@ -56,6 +56,9 @@ fi
 src_prepare() {
 	default
 
+	# Delete pre-compiled files, sources at bcj_test.c
+	rm -v tests/compress_prepared_bcj_* || die
+
 	if [[ ${PV} == 9999 ]] ; then
 		eautopoint
 		eautoreconf
