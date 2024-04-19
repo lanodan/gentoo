@@ -302,7 +302,7 @@ acct-user_src_install() {
 	# deserialize into an array
 	local groups=( ${_ACCT_USER_GROUPS} )
 
-	if [[ ${_ACCT_USER_HOME} != /dev/null ]]; then
+	if [[ "${_ACCT_USER_HOME}" != /dev/null && "${_ACCT_USER_HOME}" != /var/empty ]]; then
 		# note: we can't set permissions here since the user isn't
 		# created yet
 		keepdir "${_ACCT_USER_HOME}"
@@ -368,7 +368,7 @@ acct-user_pkg_preinst() {
 		_ACCT_USER_ADDED=1
 	fi
 
-	if [[ ${_ACCT_USER_HOME} != /dev/null ]]; then
+	if [[ ${_ACCT_USER_HOME} != /dev/null && ${_ACCT_USER_HOME} != /var/empty ]]; then
 		# default ownership to user:group
 		if [[ -z ${_ACCT_USER_HOME_OWNER} ]]; then
 			if [[ -n ${ROOT} ]]; then
