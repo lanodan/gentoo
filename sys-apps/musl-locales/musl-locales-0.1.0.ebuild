@@ -15,6 +15,10 @@ KEYWORDS="~amd64 ~arm ~arm64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~x86"
 
 RDEPEND="!sys-libs/glibc"
 
+PATCHES=(
+	"${FILESDIR}/add-all-available-locales.patch"
+)
+
 src_configure() {
 	local mycmakeargs=(
 		-DLOCALE_PROFILE=OFF
