@@ -1,4 +1,4 @@
-# Copyright 2023 Gentoo Authors
+# Copyright 2023-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -20,4 +20,13 @@ src_configure() {
 		-DLOCALE_PROFILE=OFF
 	)
 	cmake_src_configure
+}
+
+src_install() {
+	einstalldocs
+	cmake_src_install
+
+	newenvd - 00musl_locales <<-EOF
+	MUSL_LOCPATH="${EPREFIX}/usr/share/i18n/locales/musl"
+	EOF
 }
