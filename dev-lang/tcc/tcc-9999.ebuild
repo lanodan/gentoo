@@ -51,6 +51,8 @@ src_prepare() {
 	# Fix texi2html invocation
 	sed -i -e 's/-number//' Makefile || die
 	sed -i -e 's/--sections//' Makefile || die
+
+	sed -i -e 's|test -n "CFLAGS"|test -z "$CFLAGS"|' configure || die
 }
 
 src_configure() {
