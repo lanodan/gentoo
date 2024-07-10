@@ -18,7 +18,7 @@ src_compile() {
 	# CPPFLAGS is shared between CFLAGS and CXXFLAGS, but there is no
 	# C++ file, and the pre-processor is never called directly, this
 	# is easier than patching it out.
-	emake LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS} ${CPPFLAGS} -Wall" \
+	emake LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS} ${CPPFLAGS} -DNO_CUSTOM_BAUD -Wall" \
 		CC="$(tc-getCC)"
 }
 
