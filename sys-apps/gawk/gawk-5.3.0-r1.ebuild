@@ -98,6 +98,8 @@ src_configure() {
 	)
 
 	econf "${myeconfargs[@]}"
+
+	sed -i '/#define HAVE_SOCKETS/d' config.h pc/config.h || die "Failed disabling sockets"
 }
 
 src_install() {
