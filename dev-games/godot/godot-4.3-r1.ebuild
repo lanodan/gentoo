@@ -26,9 +26,9 @@ KEYWORDS="~amd64"
 # except raycast (tools-only heavy dependency), and deprecated.
 IUSE="
 	alsa +dbus debug deprecated +fontconfig +gui pulseaudio raycast
-	speech test +theora +tools +udev +upnp +vulkan wayland +webp
+	speech test +theora +tools +udev +upnp +vulkan wayland +webp +X
 "
-REQUIRED_USE="wayland? ( gui )"
+REQUIRED_USE="gui? ( || ( wayland X ) )"
 # TODO: tests still need more figuring out
 RESTRICT="test"
 
@@ -57,16 +57,22 @@ RDEPEND="
 	fontconfig? ( media-libs/fontconfig )
 	gui? (
 		media-libs/libglvnd
-		x11-libs/libX11
-		x11-libs/libXcursor
-		x11-libs/libXext
-		x11-libs/libXi
-		x11-libs/libXinerama
-		x11-libs/libXrandr
-		x11-libs/libXrender
-		x11-libs/libxkbcommon
+		X? (
+			x11-libs/libX11
+			x11-libs/libXcursor
+			x11-libs/libXext
+			x11-libs/libXi
+			x11-libs/libXinerama
+			x11-libs/libXrandr
+			x11-libs/libXrender
+			x11-libs/libxkbcommon
+		)
+		wayland? (
+			gui-libs/libdecor
+			dev-libs/wayland
+		)
 		tools? ( raycast? ( media-libs/embree:4 ) )
-		vulkan? ( media-libs/vulkan-loader[X,wayland?] )
+		vulkan? ( media-libs/vulkan-loader[X?,wayland?] )
 	)
 	pulseaudio? ( media-libs/libpulse )
 	speech? ( app-accessibility/speech-dispatcher )
@@ -81,7 +87,7 @@ RDEPEND="
 "
 DEPEND="
 	${RDEPEND}
-	gui? ( x11-base/xorg-proto )
+	X? ( x11-base/xorg-proto )
 	tools? ( test? ( dev-cpp/doctest ) )
 "
 BDEPEND="
@@ -135,10 +141,9 @@ src_compile() {
 		udev=$(usex udev)
 		use_volk=no # unnecessary when linking directly to libvulkan
 		vulkan=$(usex gui $(usex vulkan))
-		wayland=$(usex wayland)
-		# TODO: retry to add optional USE=X, wayland support is new
-		# and gui build is not well wired to handle USE="-X wayland" yet
-		x11=$(usex gui)
+		wayland=$(usex gui $(usex wayland))
+		libdecor=$(usex gui $(usex wayland))
+		x11=$(usex gui $(usex X))
 
 		system_certs_path="${EPREFIX}"/etc/ssl/certs/ca-certificates.crt
 
