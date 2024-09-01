@@ -144,6 +144,7 @@ src_compile() {
 		wayland=$(usex gui $(usex wayland))
 		libdecor=$(usex gui $(usex wayland))
 		x11=$(usex gui $(usex X))
+		openxr=no
 
 		system_certs_path="${EPREFIX}"/etc/ssl/certs/ca-certificates.crt
 
