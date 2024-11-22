@@ -50,6 +50,10 @@ else
 	PDEPEND="!crypt? ( sys-libs/libxcrypt[system] )"
 fi
 
+PATCHES=(
+	"${FILESDIR}"/${PN}-1.2.4-arm64-crti-alignment.patch
+)
+
 just_headers() {
 	use headers-only && target_is_not_host
 }
